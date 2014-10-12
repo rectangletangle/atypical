@@ -7,7 +7,7 @@ import iterlib
 from .score import Scores
 
 def markov(strings):
-    state = collections.defaultdict(lambda: collections.defaultdict(int))
+    state = collections.defaultdict(functools.partial(collections.defaultdict, int))
 
     for string in strings:
         for currentchar, nextchar in iterlib.paired(string):

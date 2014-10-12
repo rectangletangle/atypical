@@ -13,6 +13,9 @@ class Scores:
         for string in self._strings:
             yield (string, self.metric(string))
 
+    def __len__(self):
+        return len(self._strings)
+
     def ordered(self, iterable=None):
         return sorted(self if iterable is None else iterable, key=lambda pair: pair[1], reverse=self.reverse)
 
