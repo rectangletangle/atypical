@@ -4,19 +4,19 @@ import functools
 
 import iterlib
 
-__all__ = ['train', 'score', 'atypical']
+from .score import Scores
 
-def train(strings):
+def markov(strings):
     state = collections.defaultdict(lambda: collections.defaultdict(int))
 
     for string in strings:
         for currentchar, nextchar in iterlib.paired(string):
-            state[currentchar.lower()][nextchar.lower()] += 1
+            state[currentchar][nextchar] += 1
 
     return state
 
 def score(trained, string):
-    total = sum(trained[currentchar.lower()][nextchar.lower()]
+    total = sum(trained[currentchar][nextchar]
                 for currentchar, nextchar in iterlib.paired(string))
 
     try:
@@ -24,11 +24,14 @@ def score(trained, string):
     except ZeroDivisionError:
         return 0.0
 
-def atypical(trained, strings):
-    return sorted(strings, key=functools.partial(score, trained))
+def scored(strings, trained=None):
+    if trained is None:
+        trained = markov(strings)
+
+    return Scores('markov', functools.partial(score, trained), strings)
 
 if __name__ == '__main__':
-    trained = train(['ababac'])
+    trained = markov(['ababac'])
 
     assert trained['a']['b'] == 2
     assert trained['b']['a'] == 2
@@ -39,5 +42,5 @@ if __name__ == '__main__':
 
     assert score(trained, '') == 0.0
 
-    assert atypical(trained, strings) == ['xxx', 'fsdfab', 'ab', 'ababac']
+    assert list(scored(strings, trained).strings()) == ['xxx', 'fsdfab', 'ab', 'ababac']
 
