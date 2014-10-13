@@ -15,38 +15,44 @@ if __name__ == '__main__':
     sample = os.path.join(path, 'data', 'sample.txt')
 
     with open(sample) as f:
-        data = [word for word in f.read().lower().split() if len(word) > 3 and word.isalpha()]
+        words = [word for word in f.read().lower().split()
+                 if len(word) > 4 and word.isalpha()]
 
-    meanwordlen = statistics.mean(len(word) for word in data)
-
-    print('avg word length:', meanwordlen)
+    meanwordlen = statistics.mean(len(word) for word in words)
 
     extra = ['aaaaa',
              'xxxxx',
-             'abcde',
-             'uuu',
-             '<a href="http://example.com">example.com</a>',
+             'uuuuu',
+             'eeeee',
+
              'sdfjhaisjkdls',
              'dsfhsdjkhj',
              ''.join(random.choice(string.ascii_lowercase) for _ in range(int(meanwordlen))),
+
+             #'abcde',
+             #'<a href="http://example.com">example.com</a>',
              ]
 
-    data.extend(extra)
+    words.extend(extra)
+    random.shuffle(words)
 
-    random.shuffle(data)
+    atypical_words = atypical(words).ordered()
 
-    scored = [string for string, score in atypical(data)]
+    objects = list(atypical_words.objects())
+    indexed = [(objects.index(string), string) for string in extra]
 
-    print('length:', len(scored))
-
-    indexed = [(scored.index(string), string) for string in extra]
-
-    print('percentile:', (max(index for index, _ in indexed) / len(scored)) * 100)
-
+    print('corpus length:', len(words))
+    print('scored length:', len(atypical_words))
     print()
 
+    print('percentile:', (max(index for index, _ in indexed) / len(atypical_words)) * 100)
+    print()
+
+    print('indexes:')
     pprint(sorted(indexed))
-
     print()
 
-    pprint(scored[:20])
+    print('first ten:')
+    pprint(list(atypical_words.ordered())[:20])
+    print()
+

@@ -2,36 +2,36 @@
 import collections
 import functools
 
-import iterlib
+from .tokens import char_pairs
+from .score import scored
 
-from .score import Scores
+def markov(pairs):
+    markov_state = collections.defaultdict(functools.partial(collections.defaultdict, int))
 
-def markov(strings):
-    state = collections.defaultdict(functools.partial(collections.defaultdict, int))
+    for current, next_ in pairs:
+        markov_state[current][next_] += 1
 
-    for string in strings:
-        for currentchar, nextchar in iterlib.paired(string):
-            state[currentchar][nextchar] += 1
+    return markov_state
 
-    return state
-
-def score(trained, string):
-    total = sum(trained[currentchar][nextchar]
-                for currentchar, nextchar in iterlib.paired(string))
+def score(markov_state, pairs, length):
+    total = sum(markov_state[current][next_]
+                for current, next_ in pairs)
 
     try:
-        return total / len(string)
+        return total / length
     except ZeroDivisionError:
         return 0.0
 
-def scored(strings, trained=None):
-    if trained is None:
-        trained = markov(strings)
+@scored()
+def char_markov(strings, markov_state=None):
+    markov_state = markov(char_pairs(strings)) if markov_state is None else markov_state
 
-    return Scores('markov', functools.partial(score, trained), strings)
+    for string in set(strings):
+        stringscore = score(markov_state, char_pairs(string), len(string))
+        yield (stringscore, string)
 
 if __name__ == '__main__':
-    trained = markov(['ababac'])
+    trained = markov(char_pairs(['ababac']))
 
     assert trained['a']['b'] == 2
     assert trained['b']['a'] == 2
@@ -40,7 +40,10 @@ if __name__ == '__main__':
 
     strings = ['ab', 'ababac', 'xxx', 'fsdfab']
 
-    assert score(trained, '') == 0.0
+    assert score(trained, '', 0) == 0.0
 
-    assert list(scored(strings, trained).strings()) == ['xxx', 'fsdfab', 'ab', 'ababac']
+    chars = char_markov(strings, trained)
+
+    assert chars.name == 'char-markov'
+    assert list(chars.ordered().objects()) == ['xxx', 'fsdfab', 'ab', 'ababac']
 
