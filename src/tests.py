@@ -6,15 +6,13 @@ import os
 
 from . import atypical
 
-from pprint import pprint
-
 if __name__ == '__main__':
     random.seed(0)
 
-    path = os.path.split(__file__)[0]
-    sample = os.path.join(path, 'data', 'sample.txt')
+    pkg_root = os.path.dirname(os.path.dirname(__file__))
+    sample = os.path.join(pkg_root, 'data', 'sample.txt')
 
-    with open(sample) as f:
+    with open(sample, encoding='unicode-escape') as f:
         words = [word for word in f.read().lower().split()
                  if len(word) > 4 and word.isalpha()]
 
@@ -49,10 +47,12 @@ if __name__ == '__main__':
     print()
 
     print('indexes:')
-    pprint(sorted(indexed))
+    for item in sorted(indexed):
+        print(repr(item).encode('unicode-escape').decode())
     print()
 
     print('first ten:')
-    pprint(list(atypical_words)[:20])
+    for item in list(atypical_words)[:20]:
+        print(repr(item).encode('unicode-escape').decode())
     print()
 
