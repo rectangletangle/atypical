@@ -72,7 +72,7 @@ def scored(**kw):
     def wrapper(generator):
         @functools.wraps(generator)
         def wrapper_(*generator_args, **generator_kw):
-            kw.setdefault('name', generator.__name__.replace('_', '-'))
+            kw.setdefault('name', generator.__name__.strip('_').replace('_', '-'))
             return Scores(generator(*generator_args, **generator_kw), **kw)
         return wrapper_
     return wrapper

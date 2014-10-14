@@ -16,7 +16,8 @@ metrics = (
 def atypical(strings, metrics=metrics):
     strings = list(strings)
 
-    stdscores = itertools.chain(*(metric(strings).standardized() for metric in metrics))
+    stdscores = itertools.chain(*(metric(strings).standardized()
+                                  for metric in metrics))
 
     seen = set()
     for score, string in sorted(stdscores):

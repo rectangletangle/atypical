@@ -20,7 +20,8 @@ def ratios(objects):
 
 def score(ratio_state, string):
     ratios_for_string = ratios(string)
-    return -1 * sum(ratios_for_string[char] - ratio_state[char] for char in set(string))
+    return -1 * sum(ratios_for_string[char] - ratio_state[char]
+                    for char in set(string))
 
 @scored()
 def char_ratio(strings, ratio_state=None):

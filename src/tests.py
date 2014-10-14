@@ -53,6 +53,6 @@ if __name__ == '__main__':
     print()
 
     print('first ten:')
-    pprint(list(atypical_words.ordered())[:20])
+    pprint(list(atypical_words)[:20])
     print()
 
