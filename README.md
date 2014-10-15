@@ -4,12 +4,12 @@ atypical
 Find the junk data hidden amongst the good data (Python 3.4)
 
 Automatically identifying and removing low quality data is important whenever
-dealing with large quantities of organically generated information. Many
-fields can have a reasonable level of quality enforced by simply using a regex,
-e.g., URLs. However ensuring quality with data that doesn't have a strict
-format or syntax can be much trickier. This library uses a combination of the
-Markov property and character proportions to infer which data points are the
-most out of place.
+dealing with large quantities of organically generated information. Many fields
+can have a reasonable level of quality enforced by simply using a regex, e.g.,
+URLs, email addresses, phone numbers. However ensuring quality with data that
+doesn't have a strict format or syntax can be much trickier. This library uses
+a combination of the Markov property and character proportions to infer which
+data points are the most out of place.
 
 ## Usage:
 This example prints the strings ordered by how typical they are relative to the
