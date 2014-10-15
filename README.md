@@ -2,7 +2,6 @@ atypical
 ========
 
 Find the junk data hidden amongst the good data (Python 3.4)
-- - - -
 
 Automatically identifying and removing low quality data is important whenever
 dealing with a large quantities of organically generated data. Many fields can
