@@ -60,6 +60,10 @@ class Scores:
 
         return self._clone(standardized_scores)
 
+    def rounded(self, *args, **kw):
+        return self._clone((round(score, *args, **kw), object_)
+                           for score, object_ in self)
+
     def _eval(self):
         if not isinstance(self._scored_objects, list):
             self._scored_objects = list(self._scored_objects)

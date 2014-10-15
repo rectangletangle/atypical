@@ -21,7 +21,7 @@ def article_text(wikihtml):
     return '\n'.join(paragraph.text for paragraph in paragraphs)
 
 def wiki_scraper(articles):
-    urls = (urljoin(WIKI_URL, article) for article in articles)
+    urls = (urljoin(WIKI_URL, article) for article in set(articles))
 
     htmls = (response.text for response in concurrent_get(urls)
              if str(response.status_code).startswith('2'))
@@ -36,12 +36,19 @@ if __name__ == '__main__':
                 'amphibian',
                 'tunicate',
                 'echinoderm',
-                'chordate']
+                'chordate',
+                'tardigrade',
+                'aposematism',
+                'insect',
+                'crustacean',
+                'arthropod',
+                'tetrapod',
+                'vertebrate']
 
     text = wiki_scraper(articles)
 
     pkg_root = os.path.dirname(os.path.dirname(__file__))
-    output_filename = os.path.join(pkg_root, 'data', 'sample.txt')
+    output_filename = os.path.join(pkg_root, 'data', 'wikisample.txt')
 
     with open(output_filename, 'w', encoding='unicode-escape') as f:
         f.write(text)

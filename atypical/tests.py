@@ -1,10 +1,12 @@
 
 import unittest
+import doctest
 import random
+
+import atypical
 
 from .metrics import CharMarkov, CharRatio
 from .scoring import Scores
-from . import atypical
 
 class _TestMetric:
     def test_untrained(self):
@@ -106,7 +108,7 @@ class TestScores(unittest.TestCase):
 
     def test_standardized(self):
         self.assert_scores([(-1.1339, 'c'), (0.7559, 'b'), (0.378, 'a')],
-                           [(round(score, 4), object_) for score, object_ in self.scores.standardized()])
+                           list(self.scores.standardized().rounded(4)))
 
     def test_empty(self):
         emptyscores = Scores([])
@@ -133,13 +135,15 @@ class TestAtypical(unittest.TestCase):
     def test_mixed(self):
         mixedmetrics = [CharMarkov.trained_with(self.strings), CharRatio]
 
-        self.assertEqual(list(atypical(self.strings).sorted()),
-                         list(atypical(self.strings, metrics=mixedmetrics).sorted()))
+        self.assertEqual(list(atypical.atypical(self.strings).sorted()),
+                         list(atypical.atypical(self.strings, metrics=mixedmetrics).sorted()))
 
     def test_pretrained(self):
         self.assertEqual(['xx'],
                          self.atypical_strings(metrics=[CharMarkov.trained_with(['xx'])])[-1:])
 
     def atypical_strings(self, *args, **kw):
-        return list(atypical(self.strings, *args, **kw).sorted().objects())
+        return list(atypical.atypical(self.strings, *args, **kw).sorted().objects())
 
+if __name__ == '__main__':
+    doctest.testmod(atypical)
