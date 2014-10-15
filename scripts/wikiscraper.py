@@ -50,7 +50,7 @@ if __name__ == '__main__':
     pkg_root = os.path.dirname(os.path.dirname(__file__))
     output_filename = os.path.join(pkg_root, 'data', 'wikisample.txt')
 
-    with open(output_filename, 'w', encoding='unicode-escape') as f:
+    with open(output_filename, 'w', encoding='utf-8') as f:
         f.write(text)
 
     print('wrote ~{count} words to {filename}'.format(count=len(text.split()), filename=output_filename))

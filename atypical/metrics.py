@@ -63,16 +63,16 @@ class CharRatio(Metric):
         string_counter = collections.Counter()
         string_total = self._count_chars(string_counter, string)
 
-        char_ratios = ((self._ratio(self._counter, char, self._total),
-                        self._ratio(string_counter, char, string_total))
-                       for char in string)
+        char_ratios = [(self._ratio(self._counter, self._total, char),
+                        self._ratio(string_counter, string_total, char))
+                       for char in set(string)]
 
-        char_ratio_diff = sum(global_ratio - string_ratio
-                              for global_ratio, string_ratio in char_ratios)
+        assert round(sum(string_ratio for _, string_ratio in char_ratios), 6) == 1.0
 
-        return char_ratio_diff / len(string)
+        return sum(abs(global_ratio - string_ratio)
+                   for global_ratio, string_ratio in char_ratios) * -1
 
-    def _ratio(self, counter, char, total):
+    def _ratio(self, counter, total, char):
         try:
             return counter[char] / total
         except ZeroDivisionError:

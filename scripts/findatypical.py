@@ -10,7 +10,7 @@ def sample_words():
     pkg_root = os.path.dirname(os.path.dirname(__file__))
     sample = os.path.join(pkg_root, 'data', 'wikisample.txt')
 
-    with open(sample, encoding='unicode-escape') as f:
+    with open(sample, encoding='utf-8') as f:
         return [word for word in f.read().lower().split()
                 if len(word) > 4 and word.isalpha()]
 
@@ -25,18 +25,18 @@ def output(words, atypicalwords, indexed):
     print()
 
     print('junk data indexes:')
-    for item in sorted(indexed):
-        print(indent, repr(item).encode('unicode-escape').decode())
+    for index, word in sorted(indexed):
+        print(indent, index, word.encode('unicode-escape').decode())
     print()
 
     print('least typical:')
-    for item in list(atypicalwords)[:10]:
-        print(indent, repr(item).encode('unicode-escape').decode())
+    for stdscore, word in list(atypicalwords)[:20]:
+        print(indent, '{:.4f}'.format(stdscore), word.encode('unicode-escape').decode())
 
 if __name__ == '__main__':
     random.seed(0)
 
-    words = sample_words()[:1000]
+    words = sample_words()
 
     meanwordlen = statistics.mean(len(word) for word in words)
 
@@ -47,7 +47,8 @@ if __name__ == '__main__':
                 'eeeee',
                 'sdfjhsjkdls',
                 'dsfhsdjkhj',
-                ''.join(random.choice(string.ascii_lowercase) for _ in range(int(meanwordlen)))
+                ''.join(random.choice(string.ascii_lowercase) for _ in range(int(meanwordlen))),
+                '<a href="http://www.example.com">http://www.example.com</a>'
                ]
 
     words.extend(junkdata)
@@ -55,7 +56,7 @@ if __name__ == '__main__':
 
     metrics = (
                atypical.CharMarkov,
-              # atypical.CharRatio,
+               atypical.CharRatio,
               )
 
     atypicalwords = atypical.atypical(words, metrics=metrics).sorted()

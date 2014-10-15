@@ -60,22 +60,14 @@ class TestRatio(unittest.TestCase, _TestMetric):
 
     def test_train(self):
         self.metric.train(['aa', 'b'])
-        self.assert_scores((0.0, 'aab'), (-1.0, 'xxx'), ['xxx', 'abb', 'aabb', 'aab'])
+        self.assert_scores(['xxx', 'abb', 'aabb', 'aab'])
         self.metric.train(['b'])
-        self.assert_scores((0.0, 'aabb'), (-1.0, 'xxx'), ['xxx', 'aab', 'abb', 'aabb'])
+        self.assert_scores(['xxx', 'aab', 'abb', 'aabb'])
         self.metric.train(['xxxxxxxx'])
-        self.assert_scores(None, None, ['aab', 'abb', 'aabb', 'xxx'])
+        self.assert_scores(['aabb', 'aab', 'abb', 'xxx'])
 
-    def assert_scores(self, best, worst, strings):
-        scored = self.metric.scored(self.data).sorted()
-
-        if best:
-            self.assertEqual(best, list(scored)[-1])
-
-        if worst:
-            self.assertEqual(worst, list(scored)[0])
-
-        self.assertEqual(strings, list(scored.objects()))
+    def assert_scores(self,strings):
+        self.assertEqual(strings, list(self.metric.scored(self.data).sorted().objects()))
 
 class TestScores(unittest.TestCase):
     def setUp(self):
@@ -147,3 +139,4 @@ class TestAtypical(unittest.TestCase):
 
 if __name__ == '__main__':
     doctest.testmod(atypical)
+
