@@ -2,19 +2,24 @@
 import statistics
 import functools
 
-import represent
+try:
+    import represent # Nice to have, but not entirely necessary.
+except ImportError:
+    ...
 
 class Scores:
-    def __init__(self, scored_objects, name=None):
-        self.name = name
-
+    def __init__(self, scored_objects):
         self._scored_objects = scored_objects
 
     def __repr__(self, *args, **kw):
-        return represent.literal(self, list(self), **self._options())
+        try:
+            return represent.literal(self, list(self))
+        except NameError:
+            return super().__repr__()
 
     def __iter__(self):
-        yield from self._scored_objects
+        for score, object_ in self._scored_objects:
+            yield (float(score), object_)
 
     def __len__(self):
         try:
@@ -24,7 +29,7 @@ class Scores:
             return len(self._scored_objects)
 
     def __reversed__(self):
-        return self.reversed()
+        return list(self.reversed())
 
     def scores(self):
         for score, _ in self:
@@ -34,7 +39,7 @@ class Scores:
         for _, object_ in self:
             yield object_
 
-    def ordered(self):
+    def sorted(self):
         return self._clone(sorted(self))
 
     def reversed(self):
@@ -59,20 +64,17 @@ class Scores:
         if not isinstance(self._scored_objects, list):
             self._scored_objects = list(self._scored_objects)
 
-    def _options(self):
-        return {'name': self.name}
-
     def _clone(self, newscores):
-        return self.__class__(newscores, **self._options())
+        return self.__class__(newscores)
 
 def standard_score(raw, mean, stdev):
-    return (raw - mean) / stdev
+    try:
+        return (raw - mean) / stdev
+    except ZeroDivisionError:
+        return 0.0
 
-def scored(**kw):
-    def wrapper(generator):
-        @functools.wraps(generator)
-        def wrapper_(*generator_args, **generator_kw):
-            kw.setdefault('name', generator.__name__.strip('_').replace('_', '-'))
-            return Scores(generator(*generator_args, **generator_kw), **kw)
-        return wrapper_
+def scored(generator):
+    @functools.wraps(generator)
+    def wrapper(*args, **kw):
+        return Scores(generator(*args, **kw))
     return wrapper

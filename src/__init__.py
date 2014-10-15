@@ -1,40 +1,25 @@
 
-import collections
-import statistics
 import itertools
 
-from .markov import char_markov
-from .ratio import char_ratio
-from .score import scored
+from .scoring import Scores, scored
+from .metrics import CharMarkov, CharRatio
 
-metrics = (
-           char_markov,
-           char_ratio,
-          )
+__all__ = ['CharMarkov', 'CharRatio', 'Scores', 'scored', 'atypical', 'metrics']
 
-@scored()
-def atypical(strings, metrics=metrics):
+METRICS = (CharMarkov, CharRatio)
+
+@scoring.scored
+def atypical(strings, metrics=METRICS):
     strings = list(strings)
 
-    stdscores = itertools.chain(*(metric(strings).standardized()
-                                  for metric in metrics))
+    trained_metrics = (metric.trained_with(strings) if isinstance(metric, type) else metric
+                       for metric in metrics)
+
+    stdscores = itertools.chain(*(metric.scored(strings).standardized()
+                                  for metric in trained_metrics))
 
     seen = set()
     for score, string in sorted(stdscores):
         if string not in seen:
             yield (score, string)
             seen.add(string)
-
-@scored()
-def composite(strings, metrics=metrics):
-    strings = list(strings)
-
-    subscores = collections.defaultdict(list)
-
-    for metric in metrics:
-        for stdscore, token in metric(strings).standardized():
-            subscores[token].append(stdscore)
-
-    for token, stdscores in subscores.items():
-        composite_score = statistics.mean(stdscores)
-        yield (composite_score, token)
