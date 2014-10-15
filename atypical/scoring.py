@@ -9,7 +9,7 @@ except ImportError:
 
 class Scores:
     def __init__(self, scored_objects):
-        self._scored_objects = scored_objects
+        self._scored_objects = list(scored_objects)
 
     def __repr__(self, *args, **kw):
         try:
@@ -22,11 +22,7 @@ class Scores:
             yield (float(score), object_)
 
     def __len__(self):
-        try:
-            return len(self._scored_objects)
-        except TypeError:
-            self._eval()
-            return len(self._scored_objects)
+        return len(self._scored_objects)
 
     def __reversed__(self):
         return list(self.reversed())
@@ -60,13 +56,9 @@ class Scores:
 
         return self._clone(standardized_scores)
 
-    def rounded(self, *args, **kw):
-        return self._clone((round(score, *args, **kw), object_)
+    def rounded(self, *args, ndigits=3, **kw):
+        return self._clone((round(score, ndigits=ndigits, *args, **kw), object_)
                            for score, object_ in self)
-
-    def _eval(self):
-        if not isinstance(self._scored_objects, list):
-            self._scored_objects = list(self._scored_objects)
 
     def _clone(self, newscores):
         return self.__class__(newscores)
@@ -82,3 +74,4 @@ def scored(generator):
     def wrapper(*args, **kw):
         return Scores(generator(*args, **kw))
     return wrapper
+

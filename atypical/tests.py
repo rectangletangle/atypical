@@ -99,8 +99,8 @@ class TestScores(unittest.TestCase):
         self.assert_scores(['c', 'b', 'a'], self.scores.objects())
 
     def test_standardized(self):
-        self.assert_scores([(-1.1339, 'c'), (0.7559, 'b'), (0.378, 'a')],
-                           list(self.scores.standardized().rounded(4)))
+        self.assert_scores([(-1.134, 'c'), (0.756, 'b'), (0.378, 'a')],
+                           list(self.scores.standardized().rounded()))
 
     def test_empty(self):
         emptyscores = Scores([])
