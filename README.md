@@ -29,8 +29,8 @@ other strings. `'ax'` is the least typical, while `'ab'` is the most typical.
 ## Dependencies:
 * Python 3.4
 * [iterlib](https://github.com/rectangletangle/iterlib)
-* requests (only for the scripts)
-* Beautiful Soup (only for the scripts)
+* requests *(only for the scripts)*
+* Beautiful Soup *(only for the scripts)*
 
 ## Installation:
 ```bash
