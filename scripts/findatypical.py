@@ -29,8 +29,13 @@ def output(words, atypicalwords, indexed):
         print(indent, index, word.encode('unicode-escape').decode())
     print()
 
+    print('most typical:')
+    for stdscore, word in reversed(list(atypicalwords)[-5:]):
+        print(indent, '{:.4f}'.format(stdscore), word.encode('unicode-escape').decode())
+    print()
+
     print('least typical:')
-    for stdscore, word in list(atypicalwords)[:20]:
+    for stdscore, word in list(atypicalwords)[:15]:
         print(indent, '{:.4f}'.format(stdscore), word.encode('unicode-escape').decode())
 
 if __name__ == '__main__':
