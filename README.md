@@ -2,6 +2,7 @@ atypical
 ========
 
 Find the junk data hidden amongst the good data (Python 3.4)
+- - - -
 
 Automatically identifying and removing low quality data is important whenever
 dealing with a large quantities of organically generated data. Many fields can
@@ -24,7 +25,6 @@ other strings. `'ax'` is the least typical, while `'ab'` is the most typical.
 ['ax', 'abc', 'abb', 'ab']
 >>> list(scores.standardized().rounded()) # z-scores
 [(-1.268, 'ax'), (-0.215, 'abc'), (0.391, 'abb'), (1.092, 'ab')]
-
 ```
 
 ## Dependencies:
