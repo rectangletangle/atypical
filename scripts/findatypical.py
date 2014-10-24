@@ -66,6 +66,7 @@ if __name__ == '__main__':
 
     atypicalwords = atypical.atypical(words, metrics=metrics).sorted()
 
-    indexed = [(list(atypicalwords.objects()).index(string), string) for string in junkdata]
+    orderedwords = list(atypicalwords.objects())
+    indexed = [(orderedwords.index(string), string) for string in junkdata]
 
     output(words, atypicalwords, indexed)

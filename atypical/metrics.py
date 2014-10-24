@@ -57,11 +57,13 @@ class CharRatio(Metric):
         self._total = 0
 
     def train(self, strings):
-        self._total = self._count_chars(self._counter, (char for string in strings for char in string))
+        self._count_chars(self._counter, (char for string in strings for char in string))
+        self._total = self._total_count(self._counter)
 
     def score(self, string):
         string_counter = collections.Counter()
-        string_total = self._count_chars(string_counter, string)
+        self._count_chars(string_counter, string)
+        string_total = self._total_count(string_counter)
 
         char_ratios = [(self._ratio(self._counter, self._total, char),
                         self._ratio(string_counter, string_total, char))
@@ -78,7 +80,9 @@ class CharRatio(Metric):
         except ZeroDivisionError:
             return 0.0
 
+    def _total_count(self, counter):
+        return sum(counter.values())
+
     def _count_chars(self, counter, chars):
         for char in chars:
             counter[char] += 1
-        return sum(counter.values())
